@@ -5,7 +5,7 @@ import { Search } from "lucide-react";
 import CloseIcon from "@mui/icons-material/Close";
 import { Tooltip, IconButton, Alert, Button, Snackbar } from "@mui/material";
 import useLocalStorage from "@/hooks/useLocalStorage";
-import getUsername from "@/hooks/getUsername";
+import useUsername from "@/hooks/useUsername";
 
 /**
  * Integrations Component is down below.
@@ -18,7 +18,7 @@ export default function Integrations() {
     const [loading, setLoading] = useState(false);
     const [alert, setAlert] = useState(false);
     const [repos, setRepos] = useLocalStorage("repos");
-    const [name, setName] = getUsername("username");
+    const [name, setName] = useUsername("username");
 
     const getRepos = async () => {
         try {

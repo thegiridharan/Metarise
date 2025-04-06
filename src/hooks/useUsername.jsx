@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 
-export default function getUsername(key, initialValue) {
+export default function useUsername(key, initialValue) {
 
     const [name, setName] = useState(() => {
         const response = localStorage.getItem(key);

@@ -3,8 +3,6 @@ import { useState } from "react";
 import Integrations from "@/Components/Integrations";
 import ChatBot from "@/Components/ChatBot";
 import { Syne } from "next/font/google";
-import { Sora } from "next/font/google";
-import { Chakra_Petch } from "next/font/google";
 
 const font = Syne({
     subsets: ["latin"],
