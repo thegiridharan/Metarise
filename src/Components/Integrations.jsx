@@ -4,8 +4,6 @@ import axios from "axios";
 import { Search } from "lucide-react";
 import CloseIcon from "@mui/icons-material/Close";
 import { Tooltip, IconButton, Alert, Button, Snackbar } from "@mui/material";
-import useLocalStorage from "@/hooks/useLocalStorage";
-import useUsername from "@/hooks/useUsername";
 
 /**
  * Integrations Component is down below.
@@ -17,31 +15,24 @@ export default function Integrations() {
     const [index, setIndex] = useState(0);
     const [loading, setLoading] = useState(false);
     const [alert, setAlert] = useState(false);
-    const [repos, setRepos] = useLocalStorage("repos");
-    const [name, setName] = useUsername("username");
+    const [data, setData] = useState("");
+    const [loadData, setLoadData] = useState(false);
 
     const getRepos = async () => {
         try {
             setLoading(true);
             const response = await axios.get(`http://127.0.0.1:8000/github/${account}`);
-            setName(account);
-            setRepos(response.data);
+            setData(response.data);
+            console.log(data);
 
-            if (repos.status === "404" || repos.message === "Not Found") {
+            if (data.status === "404" || data.message === "Not Found") {
+                setLoadData(false);
                 setLoading(false);
                 setAlert(true);
-                <Snackbar
-                    open={alert}
-                    autoHideDuration={3000}
-                    onClose={() => setAlert(false)}
-                    anchorOrigin={{ vertical: "top", horizontal: "right" }}
-                >
-                    <Alert onClose={() => setAlert(false)}
-                        severity="error">Repository not found!
-                    </Alert>
-                </Snackbar>
+                return;
             };
 
+            setLoadData(true);
         } catch (error) {
             console.log(error);
         } finally {
@@ -57,6 +48,16 @@ export default function Integrations() {
     return (
         <>
             <div className="mt-[110px] bg-gradient-to-r from-gray-100 to-gray-300">
+                <Snackbar
+                    open={alert}
+                    autoHideDuration={3000}
+                    onClose={() => setAlert(false)}
+                    anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                >
+                    <Alert onClose={() => setAlert(false)}
+                        severity="error">Repository not found!
+                    </Alert>
+                </Snackbar>
                 <div>
                     <div className="h-[200px] flex items-center justify-center gap-[10px]">
                         <div className="md:w-[600px] flex flex-row items-center justify-center gap-[10px] outline-1 outline-gray-400 h-[45px] bg-white px-[10px] rounded-[5px] hover:outline-2 hover:outline-gray-400 hover:shadow-2xs">
@@ -79,7 +80,7 @@ export default function Integrations() {
                             </div>
                             <div className="w-[600px] h-[400px] overflow-y-auto shadow-md p-[20px] flex flex-col gap-[5px] border-[0.5px] border-gray-200 bg-gray-50 rounded-[5px]">
                                 {
-                                    repos.status !== "404" && repos.map((item, index) =>
+                                    Array.isArray(data) && data.map((item, index) =>
                                     (
                                         <div key={index}>
                                             <p className="hover:text-black cursor-pointer hover:bg-gray-200 p-[10px] rounded-[5px] transition-all duration-300 text-gray-600" onClick={() => setIndex(index)}>{item.name}</p>
@@ -96,11 +97,11 @@ export default function Integrations() {
                             <div className="w-[500px] overflow-y-auto shadow-md p-[20px] flex flex-col gap-[5px] border-[0.5px] border-gray-200 rounded-[5px] bg-gray-50">
                                 <div className="h-[370px] flex flex-col gap-[15px] overflow-y-auto">
                                     {
-                                        index !== null &&
+                                        index !== null && Array.isArray(data) &&
                                         <div className="h-[370px]">
                                             <div className="h-[90%]">
-                                                <p>{repos[index].name}</p>
-                                                <a href={`${repos[index].homepage}`} target="_blank" rel="noopener noreferrer" className="underline-offset-2 underline">{repos[index].homepage}</a>
+                                                <p>{data[index].name}</p>
+                                                <a href={`${data[index].homepage}`} target="_blank" rel="noopener noreferrer" className="underline-offset-2 underline">{data[index].homepage}</a>
                                             </div>
                                             <div className="h-[10%]">
                                                 <button className="text-white bg-black font-medium h-[40px] w-[150px] rounded-[5px] cursor-pointer">Import</button>
